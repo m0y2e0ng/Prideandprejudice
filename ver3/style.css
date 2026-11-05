@@ -181,10 +181,10 @@ body {
   cursor: pointer;
 }
 
-/* 받기: 왼쪽 아래에서 살짝 커지며 나타남 */
+/* 받기: 서서히 나타남
+   (크기를 바꾸면 그동안 화면 기준 그라데이션이 풀려 꼬리가 따로 보여서 투명도만 바꿈) */
 .msg.them.is-in {
   animation: receive 0.3s ease-out backwards;
-  transform-origin: bottom left;
 }
 
 /* 쪽번호 캡션: 조용히 나타남 */
@@ -193,8 +193,8 @@ body {
 }
 
 @keyframes receive {
-  from { opacity: 0; transform: scale(0.9); }
-  to   { opacity: 1; transform: none; }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 @keyframes fade {
