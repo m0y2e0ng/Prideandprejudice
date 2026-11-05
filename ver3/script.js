@@ -29,6 +29,8 @@ const T = {
   beforeTyping: 150, // 누른 뒤 '입력 중'까지
   typing: 700,       // '입력 중' 보이는 시간
   afterReply: 200,   // 답장 뒤 쪽번호 캡션까지
+  unblurStart: 0.4,  // 답장 뒤 첫 번째 바뀐 부분이 걷히기 시작할 때(초)
+  unblurGap: 0.9,    // 바뀐 부분이 여러 개일 때 다음 것이 걷히기 시작하는 간격(초)
 };
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -70,6 +72,10 @@ bubbles.forEach((bubble) => {
     await wait(T.typing);
     dots.remove();
 
+    // 바뀐 부분이 여러 개면 앞에서부터 차례로 블러가 걷힘
+    reply.querySelectorAll('.serif').forEach((part, i) => {
+      part.style.animationDelay = T.unblurStart + i * T.unblurGap + 's';
+    });
     show(reply);
     if (pageCaption) {
       await wait(T.afterReply);
