@@ -1,3 +1,22 @@
+// ---------- 기울어진 사진 주변 여백 ----------
+// 사진을 기울이면 차지하는 영역이 커지므로, 그만큼 위아래·오른쪽 여백을 줘서 겹치지 않게 함
+const PHOTO_GAP = 28; // 사진과 말풍선 사이 간격(px)
+function fitTiltedPhoto(img) {
+  const deg = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--photo-tilt')) || 0;
+  const a = Math.abs(deg) * Math.PI / 180;
+  const w = img.offsetWidth, h = img.offsetHeight;
+  const W = w * Math.cos(a) + h * Math.sin(a);
+  const H = w * Math.sin(a) + h * Math.cos(a);
+  img.style.marginTop = (H - h) / 2 + PHOTO_GAP + 'px';
+  img.style.marginBottom = (H - h) / 2 + PHOTO_GAP + 'px';
+  img.style.marginRight = (W - w) / 2 + 'px';
+}
+document.querySelectorAll('.photo-img').forEach((img) => {
+  if (img.complete) fitTiltedPhoto(img);
+  img.addEventListener('load', () => fitTiltedPhoto(img));
+});
+addEventListener('resize', () => document.querySelectorAll('.photo-img').forEach(fitTiltedPhoto));
+
 // ---------- 회색 말풍선을 누르면 파란 답장이 옴 ----------
 
 const T = {

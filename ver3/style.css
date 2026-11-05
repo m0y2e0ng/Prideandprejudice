@@ -327,3 +327,12 @@ body {
 .chat {
   padding-bottom: 45vh;
 }
+
+/* 사진 기울이기 (여백은 script.js가 기울어진 크기에 맞춰 계산) */
+.photo-img {
+  transform: rotate(var(--photo-tilt));
+}
+
+:root {
+  --photo-tilt: 30deg; /* 기울기 (반대로 기울이려면 -30deg) */
+}
