@@ -42,7 +42,10 @@ function show(el) {
   el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
 
-document.querySelectorAll('.msg.me').forEach((bubble) => {
+const bubbles = [...document.querySelectorAll('.msg.me')];
+let last = null; // 마지막으로 누른(답장이 온) 회색 말풍선
+
+bubbles.forEach((bubble) => {
   // 이 회색 말풍선에 대한 답장 찾기 (다음 날짜 전까지)
   let reply = null, pageCaption = null;
   for (let el = bubble.nextElementSibling; el && !el.classList.contains('date'); el = el.nextElementSibling) {
@@ -55,6 +58,7 @@ document.querySelectorAll('.msg.me').forEach((bubble) => {
   bubble.reply = async () => {
     if (!bubble.classList.contains('can-reply')) return; // 한 번만
     bubble.classList.remove('can-reply');
+    last = bubble;
 
     await wait(T.beforeTyping);
     const dots = document.createElement('p');
@@ -75,13 +79,14 @@ document.querySelectorAll('.msg.me').forEach((bubble) => {
   bubble.addEventListener('click', bubble.reply);
 });
 
-// 엔터: 지금 보고 있는 화면부터, 아직 답장이 안 온 회색 말풍선을 위에서부터 하나씩
-// (화면 위쪽에 걸쳐 있거나 이미 지나간 말풍선은 건너뜀 → 화면은 아래로만 내려감)
+// 엔터
+// 1. 말풍선을 누른 적이 있으면 → 마지막으로 누른 말풍선 바로 아래부터
+// 2. 아직 아무것도 안 눌렀으면 → 맨 위부터
 let busy = false;
 addEventListener('keydown', async (e) => {
   if (e.key !== 'Enter' || e.repeat || busy) return;
-  const next = [...document.querySelectorAll('.msg.me.can-reply')]
-    .find((b) => b.getBoundingClientRect().top >= 0);
+  const from = last ? bubbles.indexOf(last) + 1 : 0;
+  const next = bubbles.slice(from).find((b) => b.classList.contains('can-reply'));
   if (!next) return;
   e.preventDefault();
   busy = true;
