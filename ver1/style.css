@@ -1,0 +1,185 @@
+* {
+        margin: 0;
+        padding: 0;
+      }
+     
+      body {
+        font-family: "adobe-jenson-pro", sans-serif; /* 영문은 Jenson, 한글은 기본 고딕 */
+        overflow: hidden; /* 스크롤 x가로 y세로 히든<->스크롤 */
+        line-height: 1.5; /* 행간 */
+        word-break: keep-all; /* 단어 단위로 텍스트 끊기게, break all은 반대 */
+        color: black;
+        background-color: #FFFAFA;
+        cursor: pointer;
+      }
+
+      /* a {word-break : break all;} - 얘만 따로 지정하는 게 나을 때도 있음 */
+
+      h1 {
+      font-size: 17pt;
+      font-weight: 400;
+      color: black;
+      text-decoration: underline;
+      }
+
+      p {
+        font-size: 17pt;
+        font-weight: 400;
+      }
+
+      img {
+        height: 300px;
+      }
+
+      mark {
+        background-color: goldenrod;
+      }
+
+      a {
+        position: absolute; /* 절대적 */
+        top: 0;
+        left: 0;
+        width: 100%; /* 어디를 눌러도 a링크이도록 */
+        height: 100%;
+        padding: 10px;/* margin은 a링크 밖으로 나가니까 */
+        background-color: #FFFAFA;
+        color: black;
+        text-decoration: none;
+      }
+
+/* : 조건부 */
+
+      a:visited {
+        color: black;
+      }  /* a를 방문 후에 어떻게 할 건지 */
+
+      a:not(:first-child) {
+        display: none; /* none<->block */
+      } /* 첫번째 애 빼고 안 보이게 해 */
+
+      a:target {
+        display: block;
+      } /*  */
+
+      @media screen and (max-width: 704px) {
+
+}
+
+    
+
+
+    
+/* ---------- 순화하기 (오픈타입 대체) ---------- */
+
+:root {
+  --point: #D2691E; /* 포인트 컬러: 장식 아이콘, 선택지 글자 */
+  --khaki: #F0E68C; /* 버튼·선택지 바 배경, 바뀐 문장 마크 */
+}
+
+/* 한글 세리프: 컴퓨터에 설치된 A-OTF CKS-02 HAB31_중명조
+   (영문·숫자·기호는 앞에 둔 adobe-jenson-pro가 맡음) */
+@font-face {
+  font-family: "HAB31";
+  src: local("Cks_B_Habto-Lig"), local("A-OTF CKS-02 HAB31 Lig");
+}
+
+a {
+  -webkit-user-drag: none; /* 링크 안에서도 텍스트를 긁을 수 있게 */
+  user-select: text;
+}
+
+.swap {
+  cursor: text;
+}
+
+/* 욕: 모자이크 */
+.swap.is-censored {
+  color: transparent; /* 글자는 숨기고 모자이크 이미지를 배경으로 */
+  white-space: nowrap;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
+
+/* 기본 선택 색은 숨기고, 인디자인처럼 검게 반전 */
+.swap::selection {
+  background: transparent;
+}
+
+.swap.is-selected {
+  background-color: black;
+  color: white;
+}
+
+.swap.is-censored.is-selected {
+  color: transparent;
+}
+
+/* 순화된 문장: 세리프체 */
+.swap.is-refined {
+  font-family: "adobe-jenson-pro", "HAB31", "AppleMyungjo", serif;
+  font-weight: 400;
+  background-color: var(--khaki); /* 마크 효과 */
+}
+
+/* 1. 긁으면 보이는 ⓘ 버튼 (선택 영역 오른쪽 아래) */
+.ot-badge,
+.ot-menu {
+  position: fixed;
+  z-index: 10;
+  box-sizing: border-box;
+  height: 20px;
+  cursor: default;
+}
+
+.ot-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  padding: 0;
+  border: 0;
+  background: var(--khaki);
+}
+
+/* Jenson 장식 글리프 아이콘 */
+.ot-glyph {
+  font: 15px/1 "adobe-jenson-pro", serif;
+  font-feature-settings: "ornm" 1;
+  color: var(--point);
+}
+
+/* 2. 한 줄 바: ⓘ가 버튼과 같은 자리, 그 옆에 선택지가 나란히 */
+.ot-menu {
+  display: flex;
+  align-items: center;
+  padding: 0 4px 0 0;
+  border: 1px solid var(--khaki);
+  background: var(--khaki);
+  color: var(--point);
+  white-space: nowrap;
+}
+
+.ot-menu .ot-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px; /* 버튼 안쪽 너비와 같게 */
+  height: 18px;
+}
+
+
+.ot-menu button {
+  padding: 0 5px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: 11px/18px "adobe-jenson-pro", "HAB31", "AppleMyungjo", serif;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.ot-badge[hidden],
+.ot-menu[hidden] {
+  display: none;
+}

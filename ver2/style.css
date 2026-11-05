@@ -1,0 +1,162 @@
+/* ---------- 색 ---------- */
+:root {
+  --bg: #FFFAFA;    /* 전체 배경 */
+  --point: #D2691E; /* 포인트 컬러 (블러) */
+  /* 아이폰 원래 색 */
+  --swap: currentColor; /* 블러(욕) + 세리프(순화): 지금은 따로 색 없음(말풍선 글자색 그대로) */
+  --left: linear-gradient(#7cc4fa, #2f7ff2) fixed; /* 왼쪽 파란 말풍선 + 꼬리 (스크롤하면 색이 조금씩 바뀜) */
+  --right: #E9E9EB; /* 오른쪽 회색 말풍선 + 꼬리 */
+  --khaki: #F0E68C; /* 버튼·팝업 배경, 마크 */
+}
+
+/* ---------- 서체 ---------- */
+
+/* 세리프: Adobe Myungjo Std (Adobe Fonts 키트, F열에서 바뀌거나 추가된 글) */
+.serif {
+  font-family: "adobe-myungjo-std", serif;
+  font-weight: 500;
+}
+
+/* ---------- 기본 ---------- */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  /* 영어·숫자: P22 Underground SC, 한글: Adobe Gothic Std */
+  font-family: "p22-underground-sc", "adobe-gothic-std", sans-serif;
+  text-transform: uppercase; /* 영어 소문자는 모두 대문자로 */
+  font-weight: 300;
+  line-height: 1.6;  /* 행간 */
+  word-spacing: 0.12em; /* 어간 */
+  word-break: keep-all;
+  color: black;
+  background-color: var(--bg);
+}
+
+/* ---------- 문자 대화 ---------- */
+.chat {
+  display: flex;
+  flex-direction: column;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 120px 36px 120px;
+  font-size: 22px;
+}
+
+/* 날짜·시간 */
+.date {
+  align-self: center;
+  margin: 56px 0 20px;
+  color: #8e8e93;
+  font-size: 18px;
+}
+
+.date:first-child {
+  margin-top: 0;
+}
+
+.date b {
+  font-weight: 600;
+}
+
+/* 말풍선 */
+.msg {
+  position: relative;
+  max-width: 70%;
+  margin-bottom: 30px;
+  padding: 12px 24px;
+  border-radius: 28px;
+  line-height: 1.6; /* 행간 */
+}
+
+/* 오른쪽: 회색 말풍선 */
+.msg.me {
+  align-self: flex-end;
+  color: black;
+  --c: var(--right);
+}
+
+/* 왼쪽 말풍선 */
+.msg.them {
+  align-self: flex-start;
+  color: white;
+  --c: var(--left);
+}
+
+/* 말풍선과 꼬리 색 */
+.msg,
+.msg.me::before,
+.msg.them::before {
+  background: var(--c);
+}
+
+/* 말풍선 꼬리 */
+.msg::before,
+.msg::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 26px;
+}
+
+.msg.me::before {
+  right: -9px;
+  width: 22px;
+  border-bottom-left-radius: 18px 16px;
+}
+
+.msg.me::after {
+  right: -14px;
+  width: 14px;
+  background: var(--bg);
+  border-bottom-left-radius: 12px;
+}
+
+.msg.them::before {
+  left: -9px;
+  width: 22px;
+  border-bottom-right-radius: 18px 16px;
+}
+
+.msg.them::after {
+  left: -14px;
+  width: 14px;
+  background: var(--bg);
+  border-bottom-right-radius: 12px;
+}
+
+
+/* 오른쪽 말풍선의 욕(시트 빨간 글자): 블러 */
+.censor {
+  filter: blur(5px);
+}
+
+/* 오른쪽 말풍선 아래 캡션 (아이폰 '읽음' 표시처럼) */
+
+.caption {
+  align-self: flex-end;
+  margin: -24px 4px 30px 0;
+  color: #8e8e93;
+  font-size: 15px;
+}
+
+/* 대치된 부분 표시: 블러와 세리프에 포인트 컬러 */
+/* 블러(욕)와 세리프(순화)는 항상 같은 색으로 묶음 */
+.msg .censor,
+.msg .serif {
+  color: var(--swap);
+}
+
+/* 왼쪽 말풍선 아래 캡션 (오만과 편견 쪽번호) */
+.caption.left {
+  align-self: flex-start;
+  margin: -24px 0 30px 4px;
+}
+
+/* 숫자 크기 보정 (script.js가 숫자를 .num으로 감쌈) */
+.num {
+  font-size: 1.2em;
+  line-height: 0; /* 행간은 그대로 */
+}
