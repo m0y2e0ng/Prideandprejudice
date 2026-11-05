@@ -334,5 +334,5 @@ body {
 }
 
 :root {
-  --photo-tilt: 5deg; /* 기울기 (반대로 기울이려면 -30deg) */
+  --photo-tilt: 5deg; /* 기울기 (반대로 기울이려면 음수, 예: -5deg) */
 }

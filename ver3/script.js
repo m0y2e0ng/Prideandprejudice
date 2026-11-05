@@ -1,7 +1,7 @@
 // ---------- 기울어진 사진 주변 여백 ----------
 // 사진을 기울이면 차지하는 영역이 커지므로, 그만큼 위아래·오른쪽 여백을 줘서 겹치지 않게 함
 const PHOTO_GAP = 28;    // 사진과 말풍선 사이 간격(px)
-const PHOTO_SHIFT = 0.2; // 왼쪽으로 옮기는 정도 (사진 너비의 20%)
+const PHOTO_SHIFT = 0.1; // 왼쪽으로 옮기는 정도 (사진 너비의 10%)
 function fitTiltedPhoto(img) {
   const deg = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--photo-tilt')) || 0;
   const a = Math.abs(deg) * Math.PI / 180;
