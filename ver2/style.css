@@ -24,9 +24,7 @@
 }
 
 body {
-  /* 영어·숫자: P22 Underground SC, 한글: Adobe Gothic Std */
-  font-family: "p22-underground-sc", "adobe-gothic-std", sans-serif;
-  text-transform: uppercase; /* 영어 소문자는 모두 대문자로 */
+  font-family: "adobe-gothic-std", sans-serif; /* 한글·영어·숫자 모두 Adobe Gothic Std */
   font-weight: 300;
   line-height: 1.6;  /* 행간 */
   word-spacing: 0.12em; /* 어간 */
@@ -155,8 +153,3 @@ body {
   margin: -24px 0 30px 4px;
 }
 
-/* 숫자 크기 보정 (script.js가 숫자를 .num으로 감쌈) */
-.num {
-  font-size: 1.2em;
-  line-height: 0; /* 행간은 그대로 */
-}

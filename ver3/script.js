@@ -1,28 +1,3 @@
-// P22 Underground SC는 숫자가 작은 대문자 높이로 그려져 있어서,
-// 숫자만 감싸서 대문자 높이(약 1.2배)로 키움
-const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-const nodes = [];
-while (walker.nextNode()) {
-  if (/\d/.test(walker.currentNode.nodeValue) && !walker.currentNode.parentElement.closest('script')) {
-    nodes.push(walker.currentNode);
-  }
-}
-nodes.forEach((node) => {
-  const frag = document.createDocumentFragment();
-  node.nodeValue.split(/(\d+)/).forEach((part, i) => {
-    if (!part) return;
-    if (i % 2) {
-      const span = document.createElement('span');
-      span.className = 'num';
-      span.textContent = part;
-      frag.append(span);
-    } else {
-      frag.append(part);
-    }
-  });
-  node.replaceWith(frag);
-});
-
 // ---------- 회색 말풍선을 누르면 파란 답장이 옴 ----------
 
 const T = {
@@ -35,13 +10,46 @@ const T = {
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// 새로 뜬 말풍선이 화면 맨 아래에 붙지 않도록, 화면 위에서 60% 높이까지 올림
+// (아래로만 스크롤하고, 이미 그보다 위에 있으면 그대로)
+const REVEAL_LINE = 0.6;
+let scrollTarget = 0, scrollAnim = null;
+
+// 직접 부드럽게 스크롤 (여러 번 겹쳐 불러도 끊기지 않고 마지막 목표까지 감, 약 60fps)
+function smoothTo(target) {
+  scrollTarget = target;
+  if (scrollAnim) return; // 이미 움직이는 중이면 목표만 바꿈
+  const step = () => {
+    const diff = scrollTarget - scrollY;
+    if (Math.abs(diff) < 2) {
+      scrollTo(0, scrollTarget);
+      scrollAnim = null;
+      return;
+    }
+    scrollTo(0, scrollY + Math.sign(diff) * Math.max(2, Math.abs(diff) * 0.12)); // 남은 거리의 12%씩 → 끝에서 천천히 멈춤
+    scrollAnim = setTimeout(step, 16);
+  };
+  scrollAnim = setTimeout(step, 16);
+}
+
+function reveal(el) {
+  const want = el.getBoundingClientRect().bottom + scrollY - innerHeight * REVEAL_LINE;
+  const target = Math.max(want, scrollAnim ? scrollTarget : scrollY);
+  if (target > scrollY + 1) smoothTo(target); // 아래로만
+}
+
+// 사용자가 직접 스크롤하면 자동 스크롤은 멈춤
+const stopAuto = () => { clearTimeout(scrollAnim); scrollAnim = null; };
+addEventListener('wheel', stopAuto, { passive: true });
+addEventListener('touchstart', stopAuto, { passive: true });
+
 // 처음에는 파란 답장과 쪽번호 캡션을 숨김
 document.querySelectorAll('.msg.them, .caption.left').forEach((el) => el.classList.add('is-waiting'));
 
 function show(el) {
   el.classList.remove('is-waiting');
   el.classList.add('is-in');
-  el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  reveal(el);
 }
 
 const bubbles = [...document.querySelectorAll('.msg.me')];
@@ -68,7 +76,7 @@ bubbles.forEach((bubble) => {
     dots.innerHTML = '<span></span><span></span><span></span>';
     dots.setAttribute('aria-label', '입력 중');
     reply.before(dots);
-    dots.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    reveal(dots);
     await wait(T.typing);
     dots.remove();
 
@@ -96,8 +104,7 @@ addEventListener('keydown', async (e) => {
   if (!next) return;
   e.preventDefault();
   busy = true;
-  // 필요할 때만 아래로 스크롤 (이미 보이면 그대로)
-  next.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  reveal(next);
   await next.reply();
   busy = false;
 });
