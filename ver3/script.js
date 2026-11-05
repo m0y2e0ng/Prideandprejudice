@@ -75,11 +75,13 @@ document.querySelectorAll('.msg.me').forEach((bubble) => {
   bubble.addEventListener('click', bubble.reply);
 });
 
-// 엔터: 아직 답장이 안 온 회색 말풍선 중 맨 위부터 하나씩
+// 엔터: 지금 보고 있는 화면부터, 아직 답장이 안 온 회색 말풍선을 위에서부터 하나씩
+// (화면 위로 이미 지나간 말풍선은 건너뜀)
 let busy = false;
 addEventListener('keydown', async (e) => {
   if (e.key !== 'Enter' || e.repeat || busy) return;
-  const next = document.querySelector('.msg.me.can-reply');
+  const next = [...document.querySelectorAll('.msg.me.can-reply')]
+    .find((b) => b.getBoundingClientRect().bottom > 0);
   if (!next) return;
   e.preventDefault();
   busy = true;
