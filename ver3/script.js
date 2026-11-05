@@ -1,3 +1,32 @@
+// ---------- 파란 말풍선 색: 화면 위쪽은 옅고 아래쪽은 진하게 ----------
+// 말풍선의 화면 위치에 맞는 색을 계산해서 몸통·꼬리에 같이 칠함 (아이폰 문자처럼)
+const rootStyle = getComputedStyle(document.documentElement);
+const hex = (v) => rootStyle.getPropertyValue(v).trim().replace('#', '').match(/../g).map((h) => parseInt(h, 16));
+const TOP = hex('--left-top'), BOT = hex('--left-bottom');
+function colorAt(y) {
+  const t = Math.min(1, Math.max(0, y / innerHeight));
+  return `rgb(${TOP.map((c, i) => Math.round(c + (BOT[i] - c) * t)).join(',')})`;
+}
+function paintBlue() {
+  document.querySelectorAll('.msg.them').forEach((el) => {
+    if (el.classList.contains('is-waiting')) return;
+    const r = el.getBoundingClientRect();
+    if (r.bottom < -100 || r.top > innerHeight + 100) return; // 화면 밖은 건너뜀
+    const tail = parseFloat(getComputedStyle(el, '::before').height) || 26;
+    el.style.setProperty('--g-top', colorAt(r.top));
+    el.style.setProperty('--g-bot', colorAt(r.bottom));
+    el.style.setProperty('--g-tail', colorAt(r.bottom - tail));
+  });
+}
+let paintQueued = false;
+function queuePaint() {
+  if (paintQueued) return;
+  paintQueued = true;
+  requestAnimationFrame(() => { paintQueued = false; paintBlue(); });
+}
+addEventListener('scroll', queuePaint, { passive: true });
+addEventListener('resize', queuePaint);
+
 // ---------- 기울어진 사진 주변 여백 ----------
 // 사진을 기울이면 차지하는 영역이 커지므로, 그만큼 위아래·오른쪽 여백을 줘서 겹치지 않게 함
 const PHOTO_GAP = 28;    // 사진과 말풍선 사이 간격(px)
@@ -68,6 +97,7 @@ document.querySelectorAll('.msg.them, .caption.left').forEach((el) => el.classLi
 
 function show(el) {
   el.classList.remove('is-waiting');
+  paintBlue();
   el.classList.add('is-in');
   reveal(el);
 }
@@ -96,6 +126,7 @@ bubbles.forEach((bubble) => {
     dots.innerHTML = '<span></span><span></span><span></span>';
     dots.setAttribute('aria-label', '입력 중');
     reply.before(dots);
+    paintBlue();
     reveal(dots);
     await wait(T.typing);
     dots.remove();
