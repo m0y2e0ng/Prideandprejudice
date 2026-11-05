@@ -14,7 +14,8 @@
 /* 세리프: Adobe Myungjo Std (Adobe Fonts 키트, F열에서 바뀌거나 추가된 글) */
 .serif {
   font-family: "adobe-myungjo-std", serif;
-  font-weight: 500;
+  font-weight: 500; /* 키트에 이 굵기 하나뿐이라 */
+  -webkit-text-stroke: 0.45px currentColor; /* 테두리를 살짝 덧그려 더 굵게 보이게 */
 }
 
 /* ---------- 기본 ---------- */
@@ -244,4 +245,14 @@ body {
   height: 216px;
   color: rgba(0, 0, 0, 0.45);
   font-size: 15px;
+}
+
+/* 답장이 도착하면, 바뀐 부분(세리프)이 욕과 같은 블러였다가 선명해짐 */
+.msg.them.is-in .serif {
+  animation: unblur 0.7s ease-out 0.35s backwards;
+}
+
+@keyframes unblur {
+  from { filter: blur(5px); } /* 오른쪽 욕 블러와 같은 세기 */
+  to   { filter: none; }
 }
